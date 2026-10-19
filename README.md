@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛡️ TrialGuard (TechQuest)
+#  TrialGuard (TechQuest)
 ### Autonomous Multi-Agent Clinical Trial Adjudication, Regulatory Safety & Protocol Compliance Platform
 
 [![Google A2A Protocol](https://img.shields.io/badge/Protocol-Google%20A2A%20JSON--RPC%202.0-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://github.com/google/a2a)
@@ -34,7 +34,7 @@
 
 ---
 
-## 💡 Executive Summary & Core Innovations ("The Crazy Ideas")
+##  Executive Summary & Core Innovations
 
 Traditional clinical trial protocol adjudication is painfully manual: institutional review boards (IRBs) and principal investigators (PIs) spend weeks combing through electronic health records (EHR), lab panels, and trial protocol binders. Dosing errors, drug-drug interactions (DDI), and protocol violations cost pharmaceutical sponsors billions and compromise patient safety.
 
@@ -78,7 +78,7 @@ Traditional clinical trial protocol adjudication is painfully manual: institutio
     [ 21 CFR Part 11 Cryptographic Audit ]
 ```
 
-### 🌟 7 Architectural Innovations
+###  Some Architectural Keypoints
 
 #### 1. Google A2A Distributed Microservice Consensus
 Instead of relying on a monolithic prompt prone to hallucination contamination, TrialGuard decouples clinical reasoning into independent specialist microservices communicating via the **Google Agent-to-Agent (A2A) protocol** over HTTP / JSON-RPC 2.0 (`a2a.sendMessage`):
@@ -112,7 +112,7 @@ Built on Next.js 16, React 19, and `@xyflow/react` v12. Employs fine-grained `Re
 
 ---
 
-## 🏛️ High-Level System Architecture
+##  High-Level System Architecture
 
 ```mermaid
 graph TD
@@ -190,7 +190,7 @@ techquest/
 
 ---
 
-## 💻 Prerequisites
+##  Prerequisites
 
 Ensure your host machine meets the following requirements before installation:
 
@@ -233,7 +233,7 @@ Follow these exact steps to install all monorepo dependencies across Python and 
 
 ### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/TheDoomBoy-jab/techquest.git
+git clone https://github.com/randomjha301/Trial-guard.git
 cd techquest
 ```
 
@@ -269,7 +269,7 @@ pnpm install
 
 ---
 
-## ⚙️ Project Setup & Configuration
+##  Project Setup & Configuration
 
 ### Step 1: Configure Environment Variables
 Copy the `.env.example` template into a new `.env` file at the root of the repository:
@@ -325,7 +325,7 @@ uv run python scripts/seed_comprehensive_patients.py
 
 ---
 
-## 🚀 Execution
+##  Execution
 
 TrialGuard provides multiple execution modes depending on whether you want to run the complete interactive ecosystem, individual services, or automated CLI audits.
 
@@ -424,112 +424,7 @@ uv run python visualize_graph.py
 
 ---
 
-## 🎯 Evaluator Walkthrough & Expected Output
-
-When evaluating TrialGuard on **`http://localhost:3000`**, follow these test flows to observe the architectural innovations in action:
-
-### 1. Test Case 1: Standard Compliant Patient (Unanimous Approval)
-* **Select Preset**: Click the preset badge **`P034`** (or select `Sunita Rao`).
-* **Prescription Order**: `Apixaban 5 mg oral twice daily` (Standard Arm A).
-* **Click**: `Start Adjudication →`
-* **Expected Telemetry**:
-  1. **Ingress**: Passes Guardrail-1 demographic check.
-  2. **Corridors**: Passes Guardrail-2 safety check (CrCl 68 mL/min > 30 mL/min threshold).
-  3. **A2A Parallel Execution**: Compliance, Safety, and Financial agents process concurrently.
-  4. **Consensus Verdict**: Returns **`JUSTIFIED`** in green with 100% trial sponsor coverage ($0 patient out-of-pocket).
-  5. **Audit Certificate**: Tamper-evident SHA-256 hash generated.
-
----
-
-### 2. Test Case 2: Guardrail-1 Demographic Failure & Self-Healing Lockout
-* **Select Preset**: Click **`P038`** (Ananya Deshmukh, unrecorded biological sex) or **`P039`** (Robert Chen, unrecorded age).
-* **Expected Telemetry**:
-  1. Ingress detects missing required regulatory demographic fields under FDA 21 CFR 312.62.
-  2. Initiates the **Data Resupply Loop** querying MCP EHR up to 3 times.
-  3. Upon budget exhaustion, the patient is barred:
-     `⛔ Patient ID Permanently Excluded (3/3 Retries Exhausted) · 21 CFR 312.62 Ingress Lockout`
-  4. Submission button is safely locked.
-
----
-
-### 3. Test Case 3: Guardrail-2 Pre-Inference Catastrophic Short-Circuit
-* **Select Preset**:
-  * **`P041`**: Severe End-Stage Renal Failure (eGFR 12.0 mL/min < 15.0 cutoff).
-  * **`P042`**: Severe Hepatic Failure (Total Bilirubin 6.8 mg/dL > 5x ULN).
-  * **`P043`**: Critical Agranulocytosis / Bone Marrow Toxicity (ANC 320 /uL < 500 threshold).
-* **Expected Telemetry**:
-  1. Guardrail-2 detects catastrophic organ failure corridors.
-  2. **Zero LLM Tokens Wasted**: The pipeline immediately executes a **Short-Circuit Killswitch** (`SHORT_CIRCUITED`).
-  3. Visual graph highlights red warning edges and bypasses specialist agents directly to the final audit log.
-
----
-
-### 4. Test Case 4: Protocol Overdose, 1-Click Remediation & FHIR Sync
-* **Select Preset**: Click **`P036`** (Michael Chang).
-* **Initial Prescription**: `Apixaban 40 mg oral twice daily` (Overdose Violation: Trial limit is 5 mg BID).
-* **Click**: `Start Adjudication →`
-* **Expected Output**:
-  1. Compliance Agent returns `NON_COMPLIANT`.
-  2. Reducer outputs **`NOT_JUSTIFIED`** with an amber exception alert.
-  3. The **HITL Exception Drawer** opens with a **`⚡ 1-Click Fix to Standard (Apixaban 5 mg oral twice daily)`** button.
-  4. **Click the 1-Click Fix Button**:
-     * Instantly (< 1ms local fast-track) normalizes the order to `Apixaban 5 mg oral twice daily`.
-     * Click **`Confirm & Update FHIR Database`**: Synchronizes the updated dosage into the EHR records.
-     * The ReactFlow graph automatically re-evaluates and switches the verdict to **`JUSTIFIED`** in real time!
-
----
-
-### 5. Test Case 5: Free-Text Clinical LLM Note with Fuzzy Spelling Correction
-* Open the **Modify Dosage / Override** drawer on any patient.
-* In the doctor's narrative textarea, enter a note with intentional misspellings:
-  > *"Patient exhibits stable renal function (CrCl 72 mL/min). Titrate apixiban to 5mg bid per protocol Arm A."*
-* **Click**: `Evaluate Note via Clinical LLM`
-* **Expected Output**:
-  1. The LLM extracts the clinical intent.
-  2. Displays badge: `Spelling Corrected: "apixiban" → Apixaban`.
-  3. Formulates structured FHIR payload: Dosage `5 mg`, Route `oral`, Frequency `twice daily`, Timing `Every 12 hours (08:00, 20:00)`, Target Field: `MedicationRequest.dosageInstruction[0]`.
-  4. Ready for one-click FHIR database commitment.
-
----
-
-### 6. Test Case 6: Non-Clinical Chatter & Vague Note Rejection
-* In the doctor's narrative textarea, enter conversational noise or vague directives:
-  > *"Hello doctor, please accept this patient, it's a very nice day outside."*
-* **Click**: `Evaluate Note via Clinical LLM`
-* **Expected Output**:
-  1. Flags: `⚠️ Clinical Warning: Inappropriate or Ambiguous Doctor Note`.
-  2. Displays clinical explanation: *"The entered note does not specify an actionable medication name or numerical dosage."*
-  3. Disables the submission button until an actionable clinical order is provided.
-
----
-
-## 📊 Comprehensive Test Patient Matrix
-
-TrialGuard ships with 17 specialized synthetic patients designed to test every permutation of the regulatory engine:
-
-| PID | Patient Name | Trial Protocol | Scenario Category | Trigger Condition | Expected System Behavior |
-|:---|:---|:---|:---|:---|:---|
-| **P034** | Sunita Rao | NCT02415400 (Arm A) | ✅ Standard Compliant | Apixaban 5mg BID, normal CrCl | Unanimous `JUSTIFIED` approval (100% Covered) |
-| **P038** | Ananya Deshmukh | NCT02415400 (Arm A) | 🛑 Guardrail-1 Ingress | Missing biological sex | Resupply loop &rarr; Excluded Lockout |
-| **P039** | Robert Chen | NCT00699998 (Cohort B) | 🛑 Guardrail-1 Ingress | Missing patient age | Resupply loop &rarr; Excluded Lockout |
-| **P040** | Evelyn Vance | NCT02415400 (Cohort C) | 🛑 Guardrail-1 Ingress | Missing baseline blood pressure | Resupply loop &rarr; Excluded Lockout |
-| **P041** | Elena Rostova | NCT00699998 (Cohort B) | ⚡ Guardrail-2 Corridor | eGFR 12 mL/min (< 15 floor) | Pre-inference `SHORT_CIRCUITED` killswitch |
-| **P042** | Marcus Vance | NCT00809965 (Cohort B) | ⚡ Guardrail-2 Corridor | Total Bilirubin 6.8 mg/dL (> 5x ULN) | Pre-inference `SHORT_CIRCUITED` killswitch |
-| **P043** | Priya Patel | NCT02415400 (Cohort C) | ⚡ Guardrail-2 Corridor | ANC 320 /uL (< 500 agranulocytosis) | Pre-inference `SHORT_CIRCUITED` killswitch |
-| **P036** | Michael Chang | NCT02415400 (Arm A) | ⚠️ Protocol Overdose | Apixaban 40mg BID (> 5mg cap) | `NOT_JUSTIFIED` &rarr; 1-Click Fix to Accept |
-| **P044** | David Kim | NCT02415400 (Arm A) | ⚠️ Protocol Overdose | Apixaban 60mg BID (Extreme toxic dose) | `NOT_JUSTIFIED` &rarr; 1-Click Fix to Accept |
-| **P045** | Sofia Alvarez | NCT02415400 (Arm A) | ⚠️ Washout Breach | 8 days since prior anticoagulant (< 30d) | RAG Rule violation &rarr; `NOT_JUSTIFIED` |
-| **P046** | Arthur Pendelton | NCT00699998 (Cohort B) | ⚠️ Organ Boundary Floor | CrCl 22 mL/min (< 30 protocol floor) | RAG Rule violation &rarr; `NOT_JUSTIFIED` |
-| **P047** | Maria Santos | NCT02415400 (Cohort C) | ⚠️ Protocol Exclusion | Active Systemic Lupus Erythematosus | Immunotherapy Autoimmune exclusion |
-| **P048** | Lucas Scott | NCT02415400 (Arm A) | 🛑 A2A Safety DDI | Apixaban + Clarithromycin (CYP3A4 DDI) | Safety Agent Dissent &rarr; `NOT_JUSTIFIED` |
-| **P049** | Naomi Campbell | NCT02415400 (Cohort C) | 🛑 A2A Financial Dissent | Off-label Pembrolizumab 400mg | Financial Agent Denies Coverage |
-| **P050** | James Wilson | NCT00781573 (Arm A) | 🛑 A2A Tripartite Dissent | Multi-drug triple anticoagulant clash | Multi-agent deadlock &rarr; HITL Escalation |
-| **P051** | Clara Oswald | NCT02415400 (Arm A) | ✅ Standard Compliant | Standard Antithrombotic protocol | Unanimous `JUSTIFIED` approval |
-| **P052** | Ronald Miller | NCT02415400 (Cohort C) | ✅ Standard Compliant | Pembrolizumab 200mg IV Q3W | Unanimous `JUSTIFIED` approval |
-
----
-
-## 🔒 Regulatory Compliance & Cryptographic Audit Trail
+##  Regulatory Compliance & Cryptographic Audit Trail
 
 TrialGuard complies with international life sciences standards:
 
@@ -544,7 +439,7 @@ TrialGuard complies with international life sciences standards:
 
 ---
 
-## 🛠️ Verification Commands
+##  Verification Commands
 
 Run these automated test suites to verify system health:
 
@@ -566,27 +461,3 @@ curl -s http://localhost:8003/health | grep '"status":"healthy"'
 
 ---
 
-## ❓ Troubleshooting & FAQs
-
-### Q1: `Error: listen EADDRINUSE: address already in use :::3000` (or 8000/8001/8002/8003)
-**Cause**: A previous instance of the web app or an agent server is still bound to the port.  
-**Resolution**: Free the port using `lsof` or kill existing Python/Node processes:
-```bash
-lsof -ti :3000,8000,8001,8002,8003 | xargs kill -9
-```
-
-### Q2: What if I don't have a Supabase account?
-**Answer**: Supabase is completely optional! If `SUPABASE_URL` is left blank in `.env`, TrialGuard automatically falls back to high-performance in-memory state and local disk persistence (`packages/mcp-ehr/src/mcp_ehr/patients_expanded.json`). All features (including FHIR updates) will work out of the box.
-
-### Q3: `Operation not permitted (os error 1)` when running Python
-**Cause**: If executing inside a sandboxed CLI environment, Python execution may require permissions.  
-**Resolution**: Run commands directly in your local terminal shell using `python3 start_all.py` or `uv run python start_all.py`.
-
-### Q4: How do I test with an external LLM?
-**Answer**: Set `GEMINI_API_KEY` or `OPENAI_API_KEY` in `.env`. TrialGuard features automated fallback logic: if one provider rate-limits or fails, the orchestrator gracefully switches to secondary models.
-
----
-
-<div align="center">
-  <sub>Developed for TechQuest Clinical AI Initiative · Built with Google A2A, LangGraph, FastMCP & Next.js 16</sub>
-</div>
